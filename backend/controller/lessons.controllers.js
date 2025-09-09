@@ -56,7 +56,21 @@ ${message}
     model: "gemini-2.5-flash",
     contents: prompt,
   });
-  console.log(response.text);
 
-  res.json({ reply: response.text });
+  let rawOutput = response.text;
+
+   // 1. Remove backticks & "json" labels
+  rawOutput = rawOutput.replace(/```json|```/g, "").trim();
+
+  try {
+    // 2. Parse into real JSON
+    const lessonBlueprint = JSON.parse(rawOutput);
+
+    console.log(response.text);
+
+    // 3. Return as proper JSON response
+    res.json(lessonBlueprint);
+  } catch (error) {
+    res.status(500).json({ error: "Invalid JSON from LLM", raw: rawOutput });
+  }
 };
