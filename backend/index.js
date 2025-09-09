@@ -1,27 +1,20 @@
 require("dotenv").config();
 
+// IMPORTS
 const express = require("express");
+const { GoogleGenAI } = require("@google/genai");
+const lessonRoutes = require("./routes/lessons.routes")
+
+// CONFIGURATIONS
 const app = express();
 const PORT = process.env.PORT || 3000;
-const { GoogleGenAI } = require("@google/genai");
-
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 app.use(express.json());
+
+app.use('/lessons', lessonRoutes)
 
 app.get("/", (req, res) => {
     res.send("Menged API is running successfully");
-});
-
-app.post("/generate", async (req, res) => {
-    const { message } = await req.body;
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: message,
-    });
-    console.log(response.text);
-
-    res.json({ reply: response.text });
 });
 
 app.listen(PORT, () => {
