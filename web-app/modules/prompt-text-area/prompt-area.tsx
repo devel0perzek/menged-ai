@@ -1,6 +1,6 @@
 "use client";
 
-import { SendHorizontal } from "lucide-react";
+import { Paperclip, Plus, SendHorizontal } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export const PromptArea = () => {
@@ -56,8 +56,8 @@ export const PromptArea = () => {
         placeholder=" Let's learn something today!"
       />
       <div className="flex h-8 w-full items-center justify-between">
-        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 pb-0.5 text-xl">
-          +
+        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100">
+          <Paperclip size={16} />
         </button>
         <button
           className="flex h-8 w-fit cursor-pointer items-center justify-center gap-x-1 rounded-full bg-blue-500 p-4 text-sm text-white"
