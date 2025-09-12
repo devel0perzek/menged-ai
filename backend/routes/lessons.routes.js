@@ -1,5 +1,5 @@
 const express = require("express");
-const { generate_lesson } = require("../controller/lessons.controllers");
+const { generate_lesson } = require("../controllers/lessons.controllers");
 const router = express.Router();
 
 
