@@ -88,7 +88,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
         <TranscribeText onTranscribedText={handleTranscribedText} />
 
         <button
-          className="flex h-8 w-fit cursor-pointer items-center justify-center gap-x-1 rounded-full bg-blue-500 p-4 text-sm text-white"
+          className="flex h-8 w-fit cursor-pointer items-center justify-center gap-x-1 rounded-full bg-blue-500 p-4 text-sm text-white disabled:opacity-60"
           type="submit"
           disabled={!formData.prompt && files.length === 0}
         >
