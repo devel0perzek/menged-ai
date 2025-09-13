@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { GoogleGenAI } = require("@google/genai");
+const { clerkMiddleware, requireAuth } = require("@clerk/express")
 const lessonRoutes = require("./routes/lessons.routes");
 
 // CONFIGURATIONS
@@ -12,8 +13,10 @@ const PORT = process.env.PORT || 4000;
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+app.use(clerkMiddleware())
 
-app.use("/lessons", lessonRoutes);
+app.use(cors({ origin: "*" }));
+app.use('/lessons', requireAuth(),lessonRoutes)
 
 app.get("/", (req, res) => {
     res.send("Menged API is running successfully");
