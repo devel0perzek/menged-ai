@@ -3,8 +3,11 @@ const { GoogleGenAI } = require("@google/genai");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 exports.generate_lesson = async (req, res) => {
-  const { message } = await req.body;
-  const prompt = `
+    // The prompt is now available in req.body because of multer middleware
+    const promptMessage = req.body.prompt;
+    console.log("Received message:", promptMessage);
+
+    const prompt = `
         You are an AI lesson generator. Your task is to create structured, interactive, and engaging lessons for students.
 
 Always return your response in valid JSON format with the following structure:
@@ -50,27 +53,25 @@ Rules:
 - Ensure the JSON is always valid and consistent.
 
 Here is the question
-${message}
+${promptMessage}
     `;
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-  });
 
-  let rawOutput = response.text;
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
 
-   // 1. Remove backticks & "json" labels
-  rawOutput = rawOutput.replace(/```json|```/g, "").trim();
+        let rawOutput = response.text;
+        rawOutput = rawOutput.replace(/```json|```/g, "").trim();
 
-  try {
-    // 2. Parse into real JSON
-    const lessonBlueprint = JSON.parse(rawOutput);
-
-    console.log(response.text);
-
-    // 3. Return as proper JSON response
-    res.json(lessonBlueprint);
-  } catch (error) {
-    res.status(500).json({ error: "Invalid JSON from LLM", raw: rawOutput });
-  }
+        const lessonBlueprint = JSON.parse(rawOutput);
+        console.log(response.text);
+        res.json(lessonBlueprint);
+    } catch (error) {
+        res.status(500).json({
+            error: "Invalid JSON from LLM or backend error",
+            raw: error.message,
+        });
+    }
 };
