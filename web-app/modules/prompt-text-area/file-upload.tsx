@@ -20,6 +20,18 @@ export const FileUploadArea = ({
   // REFS
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Use useEffect to set a timer to clear the error message
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000); // 3000 milliseconds = 3 seconds
+
+      // Cleanup function to clear the timer if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
   // Update parent when files change
   useEffect(() => {
     onFilesChange(files);
@@ -39,21 +51,20 @@ export const FileUploadArea = ({
     setErrorMessage(null); // clear if valid
     setFiles((prev) => [...prev, ...selectedFiles]);
 
-    const newPreviews = selectedFiles.map((file) =>
-      file.type.startsWith("image/") ? URL.createObjectURL(file) : "file",
-    );
-    setPreviews((prev) => [...prev, ...newPreviews]);
+    // Generate previews for image files
+    const newPreviews = selectedFiles.map((file) => {
+      if (file.type.startsWith("image/")) {
+        return URL.createObjectURL(file);
+      }
+      return "file";
+    });
 
-    // Reset input value so same file can be reselected later
-    if (inputRef.current) inputRef.current.value = "";
+    setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
-  // Remove one file
   const removeFile = (index: number) => {
-    const updatedFiles = files.filter((_, i) => i !== index);
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    setFiles(updatedFiles);
-    setPreviews(updatedPreviews);
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (

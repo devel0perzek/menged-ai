@@ -3,6 +3,7 @@
 import { SendHorizontal } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { FileUploadArea } from "./file-upload";
+import { TranscribeText } from "./transcribe-text";
 
 export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
   // STATES
@@ -14,12 +15,25 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
   // Handle textarea change
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length < 0) {
+      return; // Prevent input if length exceeds 500 characters
+    }
     setFormData({ ...formData, prompt: e.target.value });
   };
 
   // Handle file change from child component
   const handleFilesChange = (newFiles: File[]) => {
     setFiles(newFiles);
+  };
+
+  // Handle transcribed text from child component and append it
+  const handleTranscribedText = (transcribedText: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      prompt: prev.prompt
+        ? `${prev.prompt} ${transcribedText}`
+        : transcribedText,
+    }));
   };
 
   // Handle form submission
@@ -69,7 +83,10 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
         placeholder=" Let's learn something today!"
       />
 
-      <div className="flex h-8 w-full items-center justify-end">
+      <div className="flex h-8 w-full items-center justify-end gap-x-2">
+        {/* Transcription component */}
+        <TranscribeText onTranscribedText={handleTranscribedText} />
+
         <button
           className="flex h-8 w-fit cursor-pointer items-center justify-center gap-x-1 rounded-full bg-blue-500 p-4 text-sm text-white"
           type="submit"
