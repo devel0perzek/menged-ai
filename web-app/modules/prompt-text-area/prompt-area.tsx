@@ -56,8 +56,8 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
           method: "POST",
           body: dataToSend,
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 
@@ -65,6 +65,8 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
         const data = await response.json();
         setLesson(data);
         console.log("Received lesson:", data);
+        setFormData({ prompt: "" });
+        setFiles([]);
       } else {
         console.error("Submission failed.");
       }

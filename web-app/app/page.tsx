@@ -12,20 +12,6 @@ export default function Home() {
         Make learning fun again.
       </h2>
       <PromptArea isSubscribed={isSubscribed} />
-
-      <div className="group relative">
-        <Tooltip position={"right"}>
-          <div className="h-56 w-56 bg-neutral-800 p-4 text-sm text-white">
-            I'm a tooltip
-          </div>
-        </Tooltip>
-        <Button variant={"threeD"} threeDColor={"neutral"} rounded={"full"}>
-          Continue
-        </Button>
-      </div>
-
-      <Text>this is a text</Text>
-      <Label>This is a label</Label>
     </main>
   );
 }
