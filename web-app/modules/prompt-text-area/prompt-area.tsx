@@ -4,6 +4,7 @@ import { SendHorizontal } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { FileUploadArea } from "./file-upload";
 import { TranscribeText } from "./transcribe-text";
+import { useAuth } from "@clerk/nextjs";
 
 export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
   // STATES
@@ -13,6 +14,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
     prompt: "",
   });
 
+  const { getToken } = useAuth();
   // Handle textarea change
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length < 0) {
@@ -45,11 +47,15 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
       dataToSend.append("prompt", formData.prompt);
       files.forEach((file) => dataToSend.append("files", file));
 
+      const token = await getToken();
       const response = await fetch(
         `http://localhost:4000/lessons/generate_lesson`,
         {
           method: "POST",
           body: dataToSend,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         },
       );
 
