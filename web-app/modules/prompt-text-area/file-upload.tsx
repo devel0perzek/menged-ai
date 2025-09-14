@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Paperclip, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -99,7 +100,7 @@ export const FileUploadArea = ({
         ))}
       </div>
       <div className="flex w-full items-center justify-between">
-        <div className="absolute bottom-2 left-2.5">
+        <div className="group absolute bottom-2 left-2.5">
           <Button
             variant={"icon"}
             rounded={"full"}
@@ -107,6 +108,12 @@ export const FileUploadArea = ({
             onClick={() => inputRef.current?.click()}
           >
             <Paperclip size={16} />
+
+            <Tooltip position={"bottom"}>
+              <div className="flex h-fit w-24 items-center justify-center rounded-sm bg-neutral-800 px-4 py-1.5 text-xs font-medium tracking-tight text-white">
+                Attach Files
+              </div>
+            </Tooltip>
           </Button>
         </div>
 
