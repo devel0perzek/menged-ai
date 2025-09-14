@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication. It links a user to all the lessons they have generated.
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String   @unique
+  lessons Lesson[]
+}
+
+// Lesson model to store the full AI-generated content for a user's session.
+model Lesson {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String         @db.ObjectId
+  user            User           @relation(fields: [userId], references: [id])
+  topic           String         // The topic provided by the user
+  resourceUrl     String?        // The optional resource URL provided by the user
+  
+  // The fields below directly map to the JSON provided by the AI
+  title           String
+  introduction    String
+  objectives      String[]
+  content         LessonContent[]
+  summary         String
+  quiz            QuizQuestion[]
+  furtherReading  FurtherReading[]
+  
+  createdAt       DateTime       @default(now())
+}
+
+// Embedded type for different content blocks (text, example, interactive)
+type LessonContent {
+  type          String
+  body          String?
+  component     String?
+  instructions  String?
+  data          Json?
+}
+
+// Embedded type for quiz questions
+type QuizQuestion {
+  question      String
+  options       String[]
+  answer        String
+}
+
+// Embedded type for further reading links
+type FurtherReading {
+  title         String
+  url           String
+}
