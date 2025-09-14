@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Mic, Square, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 
@@ -110,11 +111,12 @@ export const TranscribeText = ({ onTranscribedText }: TranscribeTextProps) => {
   };
 
   return (
-    <button
+    <Button
       type="button"
       onClick={isRecording ? stopRecording : startRecording}
       disabled={isProcessing}
-      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-neutral-100 disabled:opacity-50"
+      variant="icon"
+      rounded={"full"}
     >
       {isProcessing ? (
         <Loader2 size={16} className="animate-spin" />
@@ -123,6 +125,6 @@ export const TranscribeText = ({ onTranscribedText }: TranscribeTextProps) => {
       ) : (
         <Mic size={16} />
       )}
-    </button>
+    </Button>
   );
 };

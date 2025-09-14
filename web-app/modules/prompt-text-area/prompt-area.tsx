@@ -4,6 +4,8 @@ import { SendHorizontal } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { FileUploadArea } from "./file-upload";
 import { TranscribeText } from "./transcribe-text";
+import { Button } from "@/components/ui/button";
+import { TextArea } from "@/components/ui/text-area";
 
 export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
   // STATES
@@ -68,7 +70,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative flex min-h-32 w-full flex-col items-center justify-between rounded-3xl border border-neutral-200 p-2 sm:w-[90%] md:w-[56%]"
+      className="relative flex min-h-32 w-full flex-col items-center justify-between rounded-3xl border border-neutral-200 px-2.5 py-3 sm:w-[90%] md:w-[56%]"
     >
       {/* File upload component */}
       <FileUploadArea
@@ -76,10 +78,9 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
         isSubscribed={isSubscribed}
       />
 
-      <textarea
+      <TextArea
         onChange={handleChange}
         value={formData.prompt}
-        className="min-h-12 w-full px-1 tracking-tight outline-none"
         placeholder=" Let's learn something today!"
       />
 
@@ -87,13 +88,14 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
         {/* Transcription component */}
         <TranscribeText onTranscribedText={handleTranscribedText} />
 
-        <button
-          className="flex h-8 w-fit cursor-pointer items-center justify-center gap-x-1 rounded-full bg-blue-500 p-4 text-sm text-white"
+        <Button
+          rounded={"full"}
+          color="blue"
           type="submit"
           disabled={!formData.prompt && files.length === 0}
         >
           <SendHorizontal size={16} />
-        </button>
+        </Button>
       </div>
     </form>
   );

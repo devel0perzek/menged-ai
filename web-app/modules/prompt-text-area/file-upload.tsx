@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Paperclip, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -98,13 +99,16 @@ export const FileUploadArea = ({
         ))}
       </div>
       <div className="flex w-full items-center justify-between">
-        <button
-          type="button"
-          className="absolute bottom-2 left-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-neutral-100"
-          onClick={() => inputRef.current?.click()}
-        >
-          <Paperclip size={16} />
-        </button>
+        <div className="absolute bottom-2 left-2.5">
+          <Button
+            variant={"icon"}
+            rounded={"full"}
+            type="button"
+            onClick={() => inputRef.current?.click()}
+          >
+            <Paperclip size={16} />
+          </Button>
+        </div>
 
         {/* Hidden file input */}
         <input
