@@ -1,7 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Text } from "@/components/ui/text";
-import { Tooltip } from "@/components/ui/tooltip";
 import { PromptArea } from "@/modules/prompt-text-area/prompt-area";
 
 export default function Home() {
