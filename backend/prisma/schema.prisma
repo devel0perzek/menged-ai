@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -17,6 +16,7 @@ datasource db {
 // User model for authentication. It links a user to all the lessons they have generated.
 model User {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId   String   @unique
   email   String   @unique
   lessons Lesson[]
 }
