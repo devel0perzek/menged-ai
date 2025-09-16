@@ -57,7 +57,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
     if (!trimmed && files.length === 0) return;
 
     try {
-      setIsSubmitting(true); // ✅ disable button
+      setIsSubmitting(true);
       const dataToSend = new FormData();
       dataToSend.append("prompt", trimmed);
       files.forEach((file) => dataToSend.append("files", file));
@@ -86,7 +86,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
     } catch (error) {
       console.error("An error occurred:", error);
     } finally {
-      setIsSubmitting(false); // ✅ re-enable button
+      setIsSubmitting(false);
     }
   };
 
