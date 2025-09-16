@@ -9,8 +9,10 @@ import { TextArea } from "@/components/ui/text-area";
 import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/cn";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useRouter } from "next/navigation";
 
 export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
+  const router = useRouter();
   const [lesson, setLesson] = useState<JSON | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState<{ prompt: string }>({ prompt: "" });
@@ -76,6 +78,7 @@ export const PromptArea = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
       if (response.ok) {
         const data = await response.json();
+        router.push(`/lessons/${data._id}`);
         console.log(data);
         setLesson(data);
         setFormData({ prompt: "" });
