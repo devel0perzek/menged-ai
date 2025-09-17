@@ -6,16 +6,18 @@ const prisma = new PrismaClient();
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 exports.generate_lesson = async (req, res) => {
-  // The prompt is now available in req.body because of multer middleware
-  const promptMessage = req.body.prompt;
-  console.log("Received message:", promptMessage);
-  const { userId } = req.auth();
+    // The prompt is now available in req.body because of multer middleware
+    const promptMessage = req.body.prompt;
+    console.log("Received message:", promptMessage);
+    const { userId } = req.auth();
 
-  if (!userId) {
-    return res.status(401).json({ message: "unauthorized user" });
-  }
+    console.log("Authenticated user ID:", userId);
 
-  const prompt = `
+    if (!userId) {
+        return res.status(401).json({ message: "unauthorized user" });
+    }
+
+    const prompt = `
         You are an AI lesson generator. Your task is to create structured, interactive, and engaging lessons for students.
 
 Always return your response in valid JSON format with the following structure:
@@ -64,50 +66,48 @@ Here is the question
 ${promptMessage}
     `;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
 
-    let rawOutput = response.text;
-    rawOutput = rawOutput.replace(/```json|```/g, "").trim();
+        let rawOutput = response.text;
+        rawOutput = rawOutput.replace(/```json|```/g, "").trim();
 
-    const lessonBlueprint = JSON.parse(rawOutput);
+        const lessonBlueprint = JSON.parse(rawOutput);
 
-    const user = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
-      select: {
-        id: true, // Only select the `id` field
-      },
-    });
+        const user = await prisma.user.findUnique({
+            where: {
+                clerkId: userId,
+            },
+        });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+        console.log("Found user:", user);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const saveLesson = await prisma.lesson.create({
+            data: {
+                userId: user.id, // Use the internal user ID
+                topic: promptMessage, // Or a more specific topic from the AI output
+                title: lessonBlueprint.title,
+                resourceUrl: null,
+                introduction: lessonBlueprint.introduction,
+                objectives: lessonBlueprint.objectives,
+                content: lessonBlueprint.content,
+                summary: lessonBlueprint.summary,
+                quiz: lessonBlueprint.quiz,
+                furtherReading: lessonBlueprint.further_reading,
+            },
+        });
+
+        res.json(saveLesson);
+    } catch (error) {
+        res.status(500).json({
+            error: "Invalid JSON from LLM or backend error",
+            raw: error.message,
+        });
     }
-
-    const saveLesson = await prisma.lesson.create({
-      data: {
-        userId: user.id, // Use the internal user ID
-        topic: promptMessage, // Or a more specific topic from the AI output
-        title: lessonBlueprint.title,
-        resourceUrl: null,
-        introduction: lessonBlueprint.introduction,
-        objectives: lessonBlueprint.objectives,
-        content: lessonBlueprint.content,
-        summary: lessonBlueprint.summary,
-        quiz: lessonBlueprint.quiz,
-        furtherReading: lessonBlueprint.further_reading,
-      },
-    });
-
-    res.json(saveLesson);
-  } catch (error) {
-    res.status(500).json({
-      error: "Invalid JSON from LLM or backend error",
-      raw: error.message,
-    });
-  }
 };
